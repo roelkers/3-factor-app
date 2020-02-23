@@ -1,5 +1,5 @@
-import React from 'react'
-import { useQuery } from '@apollo/react-hooks';
+import React, { useState } from 'react'
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { Card, Text, Box, Flex, Heading, Button } from 'rebass'
 import { Label, Input } from '@rebass/forms'
@@ -11,7 +11,7 @@ const STUDENTS = gql`
       name
       student_lessons {
 				lessonByLesson {
-            id
+          id
           subject
         }
       }
@@ -19,8 +19,25 @@ const STUDENTS = gql`
   }
 `
 
+const ADD_LESSON = gql`
+
+mutation studentMutation($student: Int!, $lesson: Int!) {
+  insert_student_lesson(
+    objects: [{
+    	student: $student
+      lesson: $lesson
+    }]){
+    returning {
+      student
+      lesson
+    }
+  }
+}
+`
+
 function Students() {
   const { loading, error, data } = useQuery(STUDENTS)
+  const [idInput, setIdInputs ] = useState([])
   if (loading) return <Text>Loading...</Text>
   if (error) return <Text>Error.</Text>
 
@@ -41,7 +58,7 @@ function Students() {
         <Box margin='0 1em'>
           <Input name='id' id='id' />
         </Box>
-        <Button variant='primary'>Add Lesson</Button>
+        <Button onClick={() => useMutation()}variant='primary'>Add Lesson</Button>
       </Flex>
     </Card >
   ))
